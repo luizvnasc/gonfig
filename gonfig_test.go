@@ -11,8 +11,9 @@ import (
 )
 
 const (
-	validJsonFile   = "config.json"
-	invalidJsonFile = "invalid.json"
+	validJsonFile       = "config.json"
+	invalidJsonFile     = "invalid.json"
+	invalidJsonBodyFile = "invalid_config.json"
 )
 
 type SomeConfiguration struct {
@@ -47,6 +48,16 @@ func TestLoadJSON(t *testing.T) {
 	})
 
 	t.Run("Load a configuration from a invalid json file", func(t *testing.T) {
+		err := gonfig.Load(invalidJsonFile, &config)
+		if err == nil {
+			t.Errorf("It was expected to get an error. Got nil")
+		}
+		if err != gonfig.LoadError {
+			t.Errorf("Expected the error %v, got %v", gonfig.LoadError, err)
+		}
+	})
+
+	t.Run("Load a configuration from a invalid json body", func(t *testing.T) {
 		err := gonfig.Load(invalidJsonFile, &config)
 		if err == nil {
 			t.Errorf("It was expected to get an error. Got nil")
