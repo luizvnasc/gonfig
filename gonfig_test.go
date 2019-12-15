@@ -11,17 +11,20 @@ import (
 )
 
 const (
-	validJsonFile       = "config.json"
-	invalidJsonFile     = "invalid.json"
-	invalidJsonBodyFile = "invalid_config.json"
+	validJsonFile       = "./test/config.json"
+	invalidJsonFile     = "./test/invalid.json"
+	invalidJsonBodyFile = "./test/invalid_config.json"
+	validXMLFile        = "./test/config.xml"
+	invalidXMLFile      = "./test/invalid.xml"
+	invalidXMLBodyFile  = "./test/invalid_config.xml"
 )
 
 type SomeConfiguration struct {
 	Version     string `json:"version" xml:"version"`
-	ProjectName string `json:"project_name" xml:"project_name"`
+	ProjectName string `json:"project_name" xml:"project-name"`
 }
 
-var configJSON SomeConfiguration
+var configValid SomeConfiguration
 
 func init() {
 	file, err := os.Open(validJsonFile)
@@ -32,7 +35,7 @@ func init() {
 	if err != nil {
 		panic("Error Loading teste sample")
 	}
-	json.Unmarshal(b, &configJSON)
+	json.Unmarshal(b, &configValid)
 }
 func TestLoadJSON(t *testing.T) {
 	config := SomeConfiguration{}
@@ -42,12 +45,12 @@ func TestLoadJSON(t *testing.T) {
 		if err != nil {
 			t.Errorf("Error loading the configuration: %v", err)
 		}
-		if !reflect.DeepEqual(config, configJSON) {
-			t.Errorf("Error loading the configuration: expected %v, got %v", configJSON, config)
+		if !reflect.DeepEqual(config, configValid) {
+			t.Errorf("Error loading the configuration: expected %v, got %v", configValid, config)
 		}
 	})
 
-	t.Run("Load a configuration from a invalid json file", func(t *testing.T) {
+	t.Run("Load a configuration from an invalid json file", func(t *testing.T) {
 		err := gonfig.Load(invalidJsonFile, &config)
 		if err == nil {
 			t.Errorf("It was expected to get an error. Got nil")
@@ -57,8 +60,31 @@ func TestLoadJSON(t *testing.T) {
 		}
 	})
 
-	t.Run("Load a configuration from a invalid json body", func(t *testing.T) {
-		err := gonfig.Load(invalidJsonFile, &config)
+	t.Run("Load a configuration from an invalid json body", func(t *testing.T) {
+		err := gonfig.Load(invalidJsonBodyFile, &config)
+		if err == nil {
+			t.Errorf("It was expected to get an error. Got nil")
+		}
+		if err != gonfig.LoadError {
+			t.Errorf("Expected the error %v, got %v", gonfig.LoadError, err)
+		}
+	})
+}
+
+func TestLoadXML(t *testing.T) {
+	config := SomeConfiguration{}
+
+	t.Run("Load a configuration from a valid xml file", func(t *testing.T) {
+		err := gonfig.Load(validXMLFile, &config)
+		if err != nil {
+			t.Errorf("Error loading the configuration: %v", err)
+		}
+		if !reflect.DeepEqual(config, configValid) {
+			t.Errorf("Error loading the configuration: expected %v, got %v", configValid, config)
+		}
+	})
+	t.Run("Load a configuration from an invalid json file", func(t *testing.T) {
+		err := gonfig.Load(invalidXMLFile, &config)
 		if err == nil {
 			t.Errorf("It was expected to get an error. Got nil")
 		}
@@ -67,4 +93,13 @@ func TestLoadJSON(t *testing.T) {
 		}
 	})
 
+	t.Run("Load a configuration from an invalid json body", func(t *testing.T) {
+		err := gonfig.Load(invalidXMLBodyFile, &config)
+		if err == nil {
+			t.Errorf("It was expected to get an error. Got nil")
+		}
+		if err != gonfig.LoadError {
+			t.Errorf("Expected the error %v, got %v", gonfig.LoadError, err)
+		}
+	})
 }
