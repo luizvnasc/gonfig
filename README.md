@@ -13,7 +13,7 @@ A simple module to load configurations file to a struct.
 | Extension | is supported?     |
 |:---------:|:-----------------:|
 | .json     |:heavy_check_mark: |
-| .xml      |:x:                |
+| .xml      |:heavy_check_mark: |
 | .yaml     |:x:                |
 | .toml     |:x:                |
 
