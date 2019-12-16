@@ -10,12 +10,12 @@ A simple module to load configurations file to a struct.
 
 ## Files supported
 
-| Extension | is supported?     |
-|:---------:|:-----------------:|
-| .json     |:heavy_check_mark: |
-| .xml      |:heavy_check_mark: |
-| .yaml     |:x:                |
-| .toml     |:x:                |
+| Extension  |   is supported?    |
+| :--------: | :----------------: |
+|   .json    | :heavy_check_mark: |
+|    .xml    | :heavy_check_mark: |
+| .yaml/.yml | :heavy_check_mark: |
+|   .toml    |        :x:         |
 
 ## Authors
 * Luiz Augusto Volpi Nascimento - Initial work - [@luizvnasc](https://github.com/luizvnasc)
