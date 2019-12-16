@@ -24,17 +24,9 @@ func Load(path string, config interface{}) error {
 		config = nil
 		return LoadError
 	}
-
-	ext := filepath.Ext(path)
-
-	var unmarshaler unmarshalerFunc
-	switch ext {
-	case ".json":
-		unmarshaler = json.Unmarshal
-	case ".xml":
-		unmarshaler = xml.Unmarshal
-	default:
-		return UnsupportedFileError
+	unmarshaler, err := getUnmarchaler(path)
+	if err != nil {
+		return err
 	}
 	err = unmarshaler(b, &config)
 	if err != nil {
@@ -42,4 +34,17 @@ func Load(path string, config interface{}) error {
 		return LoadError
 	}
 	return nil
+}
+
+func getUnmarchaler(path string) (unmarshalerFunc, error) {
+	ext := filepath.Ext(path)
+
+	switch ext {
+	case ".json":
+		return json.Unmarshal, nil
+	case ".xml":
+		return xml.Unmarshal, nil
+	default:
+		return nil, UnsupportedFileError
+	}
 }
