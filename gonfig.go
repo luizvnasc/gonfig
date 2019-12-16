@@ -4,8 +4,11 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
+
+	"gopkg.in/yaml.v3"
 )
 
 type unmarshalerFunc func(data []byte, v interface{}) error
@@ -14,14 +17,18 @@ type unmarshalerFunc func(data []byte, v interface{}) error
 func Load(path string, config interface{}) error {
 	content, err := getFileContent(path)
 	if err != nil {
+		log.Printf("%v\n", err)
 		return LoadError
 	}
 	unmarshaler, err := getUnmarshaler(path)
 	if err != nil {
+		log.Printf("%v\n", err)
+		config = nil
 		return err
 	}
-	err = unmarshaler(content, &config)
+	err = unmarshaler(content, config)
 	if err != nil {
+		log.Printf("%v\n", err)
 		config = nil
 		return LoadError
 	}
@@ -31,11 +38,13 @@ func Load(path string, config interface{}) error {
 func getUnmarshaler(path string) (unmarshalerFunc, error) {
 	ext := filepath.Ext(path)
 
-	switch ext {
-	case ".json":
+	switch {
+	case ext == ".json":
 		return json.Unmarshal, nil
-	case ".xml":
+	case ext == ".xml":
 		return xml.Unmarshal, nil
+	case ext == ".yaml" || ext == ".yml":
+		return yaml.Unmarshal, nil
 	default:
 		return nil, UnsupportedFileError
 	}
