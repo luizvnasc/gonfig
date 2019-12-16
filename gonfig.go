@@ -12,34 +12,41 @@ type unmarshalerFunc func(data []byte, v interface{}) error
 
 // Load a struct with the configuration from a config file.
 func Load(path string, config interface{}) error {
-	configFile, err := os.Open(path)
+	content, err := getFileContent(path)
 	if err != nil {
-		config = nil
 		return LoadError
 	}
-	defer configFile.Close()
-
-	b, err := ioutil.ReadAll(configFile)
+	unmarshaler, err := getUnmarchaler(path)
 	if err != nil {
-		config = nil
-		return LoadError
+		return err
 	}
-
-	ext := filepath.Ext(path)
-
-	var unmarshaler unmarshalerFunc
-	switch ext {
-	case ".json":
-		unmarshaler = json.Unmarshal
-	case ".xml":
-		unmarshaler = xml.Unmarshal
-	default:
-		return UnsupportedFileError
-	}
-	err = unmarshaler(b, &config)
+	err = unmarshaler(content, &config)
 	if err != nil {
 		config = nil
 		return LoadError
 	}
 	return nil
+}
+
+func getUnmarchaler(path string) (unmarshalerFunc, error) {
+	ext := filepath.Ext(path)
+
+	switch ext {
+	case ".json":
+		return json.Unmarshal, nil
+	case ".xml":
+		return xml.Unmarshal, nil
+	default:
+		return nil, UnsupportedFileError
+	}
+}
+
+func getFileContent(path string) (bytes []byte, err error) {
+	configFile, err := os.Open(path)
+	if err != nil {
+		return
+	}
+	defer configFile.Close()
+	bytes, err = ioutil.ReadAll(configFile)
+	return
 }
