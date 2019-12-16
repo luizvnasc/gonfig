@@ -16,7 +16,7 @@ func Load(path string, config interface{}) error {
 	if err != nil {
 		return LoadError
 	}
-	unmarshaler, err := getUnmarchaler(path)
+	unmarshaler, err := getUnmarshaler(path)
 	if err != nil {
 		return err
 	}
@@ -28,7 +28,7 @@ func Load(path string, config interface{}) error {
 	return nil
 }
 
-func getUnmarchaler(path string) (unmarshalerFunc, error) {
+func getUnmarshaler(path string) (unmarshalerFunc, error) {
 	ext := filepath.Ext(path)
 
 	switch ext {
