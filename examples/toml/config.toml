@@ -1,0 +1,5 @@
+version = "1.0.0"
+desc = "An example using toml"
+[redis]
+  host = "127.0.0.1"
+  port = 6379

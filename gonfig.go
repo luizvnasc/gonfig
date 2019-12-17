@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/pelletier/go-toml"
 	"gopkg.in/yaml.v3"
 )
 
@@ -45,6 +46,8 @@ func getUnmarshaler(path string) (unmarshalerFunc, error) {
 		return xml.Unmarshal, nil
 	case ext == ".yaml" || ext == ".yml":
 		return yaml.Unmarshal, nil
+	case ext == ".toml":
+		return toml.Unmarshal, nil
 	default:
 		return nil, UnsupportedFileError
 	}

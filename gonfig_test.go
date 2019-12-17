@@ -19,11 +19,13 @@ const (
 	unsupportedFile     = "./test/config.xyz"
 	validYamlFile       = "./test/config.yaml"
 	invalidYamlBodyFile = "./test/invalid_config.yaml"
+	validTomlFile       = "./test/config.toml"
+	invalidTomlBodyFile = "./test/invalid_config.toml"
 )
 
 type SomeConfiguration struct {
-	Version     string `json:"version" xml:"version" yaml:"version" `
-	ProjectName string `json:"project_name" xml:"project-name" yaml:"project_name" `
+	Version     string `json:"version" xml:"version" yaml:"version" toml:"version"`
+	ProjectName string `json:"project_name" xml:"project-name" yaml:"project_name" toml:"project_name"`
 }
 
 var configValid SomeConfiguration
@@ -119,6 +121,31 @@ func TestGonfig(t *testing.T) {
 			}
 		})
 	})
+
+	t.Run("TOML tests", func(t *testing.T) {
+		t.Run("Load a configuration from a valid toml file", func(t *testing.T) {
+			config := SomeConfiguration{}
+			err := gonfig.Load(validTomlFile, &config)
+			if err != nil {
+				t.Errorf("Error loading the configuration: %v", err)
+			}
+			if !reflect.DeepEqual(config, configValid) {
+				t.Errorf("Error loading the configuration: expected %v, got %v", configValid, config)
+			}
+		})
+
+		t.Run("Load a configuration from an invalid toml body", func(t *testing.T) {
+			config := SomeConfiguration{}
+			err := gonfig.Load(invalidTomlBodyFile, &config)
+			if err == nil {
+				t.Errorf("It was expected to get an error. Got nil")
+			}
+			if err != gonfig.LoadError {
+				t.Errorf("Expected the error %v, got %v", gonfig.LoadError, err)
+			}
+		})
+	})
+
 	t.Run("Unsupported file", func(t *testing.T) {
 		config := SomeConfiguration{}
 		err := gonfig.Load(unsupportedFile, &config)
