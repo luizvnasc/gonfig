@@ -7,6 +7,44 @@
 
 A simple module to load configurations file to a struct.
 
+## Getting Started
+
+To install this package run:
+
+```
+go get github.com/luizvnasc/gonfig
+```
+
+### Example
+
+``` golang
+
+package main
+
+import (
+	"fmt"
+	"github.com/luizvnasc/gonfig"
+)
+
+//Config struct to store the app configuration
+type Config struct {
+	Version     string `toml:"version"`
+	Description string `toml:"desc"`
+	Redis       struct {
+		Host string `toml:"host"`
+		Port uint   `toml:"port"`
+	} `toml:"redis"`
+}
+
+func main() {
+	var config Config
+	gonfig.Load("config.toml", &config)
+	fmt.Printf("%v", config)
+}
+
+
+```
+You can see more examples [here](https://github.com/luizvnasc/gonfig/tree/master/examples).
 
 ## Files supported
 
@@ -15,7 +53,14 @@ A simple module to load configurations file to a struct.
 |   .json    | :heavy_check_mark: |
 |    .xml    | :heavy_check_mark: |
 | .yaml/.yml | :heavy_check_mark: |
-|   .toml    |        :x:         |
+|   .toml    | :heavy_check_mark: |
+
+## Dependencies
+
+| Dependency  |   Repository    |
+| :--------: | :----------------: |
+| gopkg.in/yaml.v3 | [https://github.com/go-yaml/yaml](https://github.com/go-yaml/yaml) |
+|   go-toml    | [github.com/pelletier/go-toml](github.com/pelletier/go-toml) |
 
 ## Authors
 * Luiz Augusto Volpi Nascimento - Initial work - [@luizvnasc](https://github.com/luizvnasc)
