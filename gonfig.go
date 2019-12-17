@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"io/ioutil"
-	"log"
 	"os"
 	"path/filepath"
 
@@ -18,18 +17,15 @@ type unmarshalerFunc func(data []byte, v interface{}) error
 func Load(path string, config interface{}) error {
 	content, err := getFileContent(path)
 	if err != nil {
-		log.Printf("%v\n", err)
 		return LoadError
 	}
 	unmarshaler, err := getUnmarshaler(path)
 	if err != nil {
-		log.Printf("%v\n", err)
 		config = nil
 		return err
 	}
 	err = unmarshaler(content, config)
 	if err != nil {
-		log.Printf("%v\n", err)
 		config = nil
 		return LoadError
 	}
