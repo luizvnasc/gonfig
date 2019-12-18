@@ -38,7 +38,7 @@ type Config struct {
 
 func main() {
 	var config Config
-	gonfig.Load("config.toml", &config)
+	gonfig.Load(&config,"config.toml")
 	fmt.Printf("%v", config)
 }
 ```
