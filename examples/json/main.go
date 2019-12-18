@@ -18,6 +18,6 @@ type Config struct {
 
 func main() {
 	var config Config
-	gonfig.Load("config.json", &config)
+	gonfig.Load(&config, "config.json")
 	fmt.Printf("%v", config)
 }

@@ -41,26 +41,55 @@ func main() {
 	gonfig.Load("config.toml", &config)
 	fmt.Printf("%v", config)
 }
-
-
 ```
+
+If you want to use environment variables:
+
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/luizvnasc/gonfig"
+)
+
+//Config struct to store the app configuration
+type Config struct {
+	Version     string `env:"VERSION"`
+	Description string `env:"DESCRIPTION"`
+	Redis       struct {
+		Host string `env:"REDIS_HOST"`
+		Port uint   `env:"REDIS_PORT"`
+	}
+}
+
+func main() {
+	var config Config
+	gonfig.Load(&config)
+	fmt.Printf("%v", config)
+}
+```
+
 You can see more examples [here](https://github.com/luizvnasc/gonfig/tree/master/examples).
 
-## Files supported
+## Supported formats
 
-| Extension  |   is supported?    |
-| :--------: | :----------------: |
-|   .json    | :heavy_check_mark: |
-|    .xml    | :heavy_check_mark: |
-| .yaml/.yml | :heavy_check_mark: |
-|   .toml    | :heavy_check_mark: |
+|        Format         |   is supported?    |
+| :-------------------: | :----------------: |
+|         json          | :heavy_check_mark: |
+|          xml          | :heavy_check_mark: |
+|         yaml          | :heavy_check_mark: |
+|         toml          | :heavy_check_mark: |
+| environment variables | :heavy_check_mark: |
 
 ## Dependencies
 
-| Dependency  |   Repository    |
-| :--------: | :----------------: |
+|    Dependency    |                             Repository                             |
+| :--------------: | :----------------------------------------------------------------: |
 | gopkg.in/yaml.v3 | [https://github.com/go-yaml/yaml](https://github.com/go-yaml/yaml) |
-|   go-toml    | [github.com/pelletier/go-toml](github.com/pelletier/go-toml) |
+|     go-toml      |    [github.com/pelletier/go-toml](github.com/pelletier/go-toml)    |
+|      go-env      |      [github.com/luizvnasc/goenv](github.com/luizvnasc/goenv)      |
 
 ## Authors
 * Luiz Augusto Volpi Nascimento - Initial work - [@luizvnasc](https://github.com/luizvnasc)

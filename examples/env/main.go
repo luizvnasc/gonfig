@@ -8,16 +8,16 @@ import (
 
 //Config struct to store the app configuration
 type Config struct {
-	Version     string `toml:"version"`
-	Description string `toml:"desc"`
+	Version     string `env:"VERSION"`
+	Description string `env:"DESCRIPTION"`
 	Redis       struct {
-		Host string `toml:"host"`
-		Port uint   `toml:"port"`
-	} `toml:"redis"`
+		Host string `env:"REDIS_HOST"`
+		Port uint   `env:"REDIS_PORT"`
+	}
 }
 
 func main() {
 	var config Config
-	gonfig.Load(&config, "config.toml")
+	gonfig.Load(&config)
 	fmt.Printf("%v", config)
 }

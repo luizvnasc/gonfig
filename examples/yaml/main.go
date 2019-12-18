@@ -18,6 +18,6 @@ type Config struct {
 
 func main() {
 	var config Config
-	gonfig.Load("config.yaml", &config)
+	gonfig.Load(&config, "config.yaml")
 	fmt.Printf("%v", config)
 }
