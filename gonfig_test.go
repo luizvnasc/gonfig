@@ -24,8 +24,8 @@ const (
 )
 
 type SomeConfiguration struct {
-	Version     string `json:"version" xml:"version" yaml:"version" toml:"version"`
-	ProjectName string `json:"project_name" xml:"project-name" yaml:"project_name" toml:"project_name"`
+	Version     string `json:"version" xml:"version" yaml:"version" toml:"version" env:"VERSION"`
+	ProjectName string `json:"project_name" xml:"project-name" yaml:"project_name" toml:"project_name" env:"PROJECT_NAME"`
 }
 
 var configValid SomeConfiguration
@@ -45,7 +45,7 @@ func TestGonfig(t *testing.T) {
 	t.Run("JSON tests", func(t *testing.T) {
 		t.Run("Load a configuration from a valid json file", func(t *testing.T) {
 			config := SomeConfiguration{}
-			err := gonfig.Load(validJsonFile, &config)
+			err := gonfig.Load(&config, validJsonFile)
 			if err != nil {
 				t.Errorf("Error loading the configuration: %v", err)
 			}
@@ -56,7 +56,7 @@ func TestGonfig(t *testing.T) {
 
 		t.Run("Load a configuration from an invalid json file", func(t *testing.T) {
 			config := SomeConfiguration{}
-			err := gonfig.Load(invalidJsonFile, &config)
+			err := gonfig.Load(&config, invalidJsonFile)
 			if err == nil {
 				t.Errorf("It was expected to get an error. Got nil")
 			}
@@ -67,7 +67,7 @@ func TestGonfig(t *testing.T) {
 
 		t.Run("Load a configuration from an invalid json body", func(t *testing.T) {
 			config := SomeConfiguration{}
-			err := gonfig.Load(invalidJsonBodyFile, &config)
+			err := gonfig.Load(&config, invalidJsonBodyFile)
 			if err == nil {
 				t.Errorf("It was expected to get an error. Got nil")
 			}
@@ -79,7 +79,7 @@ func TestGonfig(t *testing.T) {
 	t.Run("XML tests", func(t *testing.T) {
 		t.Run("Load a configuration from a valid xml file", func(t *testing.T) {
 			config := SomeConfiguration{}
-			err := gonfig.Load(validXMLFile, &config)
+			err := gonfig.Load(&config, validXMLFile)
 			if err != nil {
 				t.Errorf("Error loading the configuration: %v", err)
 			}
@@ -89,7 +89,7 @@ func TestGonfig(t *testing.T) {
 		})
 		t.Run("Load a configuration from an invalid xml body", func(t *testing.T) {
 			config := SomeConfiguration{}
-			err := gonfig.Load(invalidXMLBodyFile, &config)
+			err := gonfig.Load(&config, invalidXMLBodyFile)
 			if err == nil {
 				t.Errorf("It was expected to get an error. Got nil")
 			}
@@ -101,7 +101,7 @@ func TestGonfig(t *testing.T) {
 	t.Run("YAML tests", func(t *testing.T) {
 		t.Run("Load a configuration from a valid yaml file", func(t *testing.T) {
 			config := SomeConfiguration{}
-			err := gonfig.Load(validYamlFile, &config)
+			err := gonfig.Load(&config, validYamlFile)
 			if err != nil {
 				t.Errorf("Error loading the configuration: %v", err)
 			}
@@ -112,7 +112,7 @@ func TestGonfig(t *testing.T) {
 
 		t.Run("Load a configuration from an invalid yaml body", func(t *testing.T) {
 			config := SomeConfiguration{}
-			err := gonfig.Load(invalidYamlBodyFile, &config)
+			err := gonfig.Load(&config, invalidYamlBodyFile)
 			if err == nil {
 				t.Errorf("It was expected to get an error. Got nil")
 			}
@@ -125,7 +125,7 @@ func TestGonfig(t *testing.T) {
 	t.Run("TOML tests", func(t *testing.T) {
 		t.Run("Load a configuration from a valid toml file", func(t *testing.T) {
 			config := SomeConfiguration{}
-			err := gonfig.Load(validTomlFile, &config)
+			err := gonfig.Load(&config, validTomlFile)
 			if err != nil {
 				t.Errorf("Error loading the configuration: %v", err)
 			}
@@ -136,7 +136,7 @@ func TestGonfig(t *testing.T) {
 
 		t.Run("Load a configuration from an invalid toml body", func(t *testing.T) {
 			config := SomeConfiguration{}
-			err := gonfig.Load(invalidTomlBodyFile, &config)
+			err := gonfig.Load(&config, invalidTomlBodyFile)
 			if err == nil {
 				t.Errorf("It was expected to get an error. Got nil")
 			}
@@ -146,9 +146,25 @@ func TestGonfig(t *testing.T) {
 		})
 	})
 
+	t.Run("ENV tests", func(t *testing.T) {
+		t.Run("Load a configuration from ENV", func(t *testing.T) {
+			config := SomeConfiguration{}
+			os.Setenv("VERSION", configValid.Version)
+			os.Setenv("PROJECT_NAME", configValid.ProjectName)
+			err := gonfig.Load(&config)
+			if err != nil {
+				t.Errorf("Error loading the configuration: %v", err)
+			}
+			if !reflect.DeepEqual(config, configValid) {
+				t.Errorf("Error loading the configuration: expected %v, got %v", configValid, config)
+			}
+		})
+
+	})
+
 	t.Run("Unsupported file", func(t *testing.T) {
 		config := SomeConfiguration{}
-		err := gonfig.Load(unsupportedFile, &config)
+		err := gonfig.Load(&config, unsupportedFile)
 		if err == nil {
 			t.Errorf("It was expected to get an error. Got nil")
 		}

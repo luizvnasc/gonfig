@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"io/ioutil"
-	"log"
 	"os"
 	"path/filepath"
 
+	"github.com/luizvnasc/goenv"
 	"github.com/pelletier/go-toml"
 	"gopkg.in/yaml.v3"
 )
@@ -15,22 +15,22 @@ import (
 type unmarshalerFunc func(data []byte, v interface{}) error
 
 // Load a struct with the configuration from a config file.
-func Load(path string, config interface{}) error {
-	content, err := getFileContent(path)
-	if err != nil {
-		log.Printf("%v\n", err)
-		return LoadError
+func Load(config interface{}, args ...string) error {
+	if len(args) == 0 {
+		err := goenv.Unmarshal(config)
+		return err
 	}
+	path := args[0]
 	unmarshaler, err := getUnmarshaler(path)
 	if err != nil {
-		log.Printf("%v\n", err)
-		config = nil
 		return err
+	}
+	content, err := getFileContent(path)
+	if err != nil {
+		return LoadError
 	}
 	err = unmarshaler(content, config)
 	if err != nil {
-		log.Printf("%v\n", err)
-		config = nil
 		return LoadError
 	}
 	return nil
