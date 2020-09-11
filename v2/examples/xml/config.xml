@@ -1,0 +1,5 @@
+<config>
+    <version>1.0.0</version>
+    <description>A xml exemple</description>
+    <redis host="127.0.0.1" port="6379"/>
+</config>
