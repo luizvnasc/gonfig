@@ -1,0 +1,8 @@
+{
+    "version": "1.0.0",
+    "desc": "An example using json",
+    "redis": {
+        "host": "127.0.0.1",
+        "port": 6379
+    }
+}
